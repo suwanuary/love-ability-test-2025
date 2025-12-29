@@ -259,14 +259,83 @@
 
     <script>
         const quizData = [
-            { id: 1, section: 1, question: "다음 제시된 사진은 두 사람이 봄에 방문했던 장소이다. 사진 속 장소에서 발생했던 사건으로 옳은 것은?", hasImage: true, imageUrl: "images/love_01.JPG", points: 3, options: ["주차할 곳을 바로 찾아서 빠르게 주차했다.", "상호가 메뉴 주문을 잘못해서 수완이한테 혼났다.", "너무 맛있어서 둘 다 말없이 밥만 먹었다.", "식당 주차비로 65,000원이 나왔다."], correctAnswer: 3 },
-            { id: 2, section: 1, question: "다음은 두 사람이 100일을 기념하여 방문했던 식당의 음식 사진이다. 이 날 식사를 마친 후 두 사람이 이동한 장소로 알맞은 것은?", hasImage: true, imageUrl: "images/love_02.JPG", points: 4, options: ["케이크 전문점에 가서 케이크를 만들었다.", "부평CGV에서 F1을 관람했다.", "음료를 마시며 부평 종합 시장을 구경했다.", "수완이 집으로 가서 2차를 시작했다."], correctAnswer: 0 },
-            { id: 3, section: 1, question: "다음 사진의 배경이 되는 장소는 어디인가?", hasImage: true, imageUrl: "images/love_03.JPG", points: 5, difficulty: "난이도 상", options: ["홍대입구역 맛집", "건대입구역 맛집", "여의도 맛집", "석촌호수 맛집"], correctAnswer: 2 },
-            { id: 4, section: 2, question: "다음 중 수완이가 가장 좋아하는 브랜드와 메뉴가 올바르게 짝지어진 것은?", hasImage: false, points: 3, options: ["[엽기떡볶이] - [매운맛]", "[롯데리아] - [새우버거]", "[메가커피] - [말차라떼]", "[본죽] - [쇠고기야채죽]"], correctAnswer: 2 },
-            { id: 5, section: 2, question: "상호가 평소에 수완이에게 가장 자주 하는 잔소리(혹은 말버릇)로 옳은 것은?", hasImage: false, points: 4, options: ['"밥은 먹고 하는 거지?"', '"보고싶어"', '"따뜻하게 입엉"', '"너무 예쁜 거 아니야?"'], correctAnswer: 0 },
-            { id: 6, section: 2, question: "두 사람이 처음으로 같이 봤던 영화의 제목으로 옳은 것은?", hasImage: false, points: 3, options: ["28년후", "승부", "얼굴", "귀멸의칼날"], correctAnswer: 3 },
-            { id: 7, section: 3, question: "다음 사진은 5월 6일에 찍은 것이다. 이날 상호가 입고 있었던 아우터의 실제 색상은 무엇인가?", hasImage: true, imageUrl: "images/love_04.JPG", points: 5, options: ["차콜 그레이", "네이비", "딥 포레스트 그린", "제트 블랙"], correctAnswer: 1 },
-            { id: 8, section: 3, question: "수완이가 상호에게 처음으로 선물했던 아이템은 무엇인가?", hasImage: false, points: 4, options: ["니트", "편지", "알부민", "소고기"], correctAnswer: 0 }
+            { 
+                id: 1, 
+                section: 1, 
+                question: "다음 제시된 사진은 두 사람이 봄에 방문했던 장소이다. 사진 속 장소에서 발생했던 사건으로 옳은 것은?", 
+                hasImage: true, 
+                imageUrl: "images/love_01.JPG", 
+                points: 3, 
+                options: ["주차할 곳을 바로 찾아서 빠르게 주차했다.", "상호가 메뉴 주문을 잘못해서 수완이한테 혼났다.", "너무 맛있어서 둘 다 말없이 밥만 먹었다.", "식당 주차비로 65,000원이 나왔다."], 
+                correctAnswer: 3 // 정답: 4번
+            },
+            { 
+                id: 2, 
+                section: 1, 
+                question: "다음은 두 사람이 100일을 기념하여 방문했던 식당의 음식 사진이다. 이 날 식사를 마친 후 두 사람이 이동한 장소로 알맞은 것은?", 
+                hasImage: true, 
+                imageUrl: "images/love_02.JPG", 
+                points: 4, 
+                options: ["케이크 전문점에 가서 케이크를 만들었다.", "부평CGV에서 F1을 관람했다.", "음료를 마시며 부평 종합 시장을 구경했다.", "수완이 집으로 가서 2차를 시작했다."], 
+                correctAnswer: 2 // 정답: 3번
+            },
+            { 
+                id: 3, 
+                section: 1, 
+                question: "다음 사진의 배경이 되는 장소는 어디인가?", 
+                hasImage: true, 
+                imageUrl: "images/love_03.JPG", 
+                points: 5, 
+                difficulty: "난이도 상", 
+                options: ["홍대입구역 맛집", "건대입구역 맛집", "여의도 맛집", "석촌호수 맛집"], 
+                correctAnswer: 1 // 정답: 2번
+            },
+            { 
+                id: 4, 
+                section: 2, 
+                question: "다음 중 수완이가 가장 좋아하는 브랜드와 메뉴가 올바르게 짝지어진 것은?", 
+                hasImage: false, 
+                points: 3, 
+                options: ["[엽기떡볶이] - [매운맛]", "[롯데리아] - [새우버거]", "[메가커피] - [말차라떼]", "[본죽] - [쇠고기야채죽]"], 
+                correctAnswer: 1 // 정답: 2번
+            },
+            { 
+                id: 5, 
+                section: 2, 
+                question: "상호가 평소에 수완이에게 가장 자주 하는 말로 옳은 것은?", 
+                hasImage: false, 
+                points: 4, 
+                options: ['"밥은 먹고 하는 거지?"', '"보고싶어"', '"따뜻하게 입엉"', '"너무 예쁜 거 아니야?"'], 
+                correctAnswer: 1 // 정답: 2번
+            },
+            { 
+                id: 6, 
+                section: 2, 
+                question: "두 사람이 처음으로 같이 봤던 영화의 제목으로 옳은 것은?", 
+                hasImage: false, 
+                points: 3, 
+                options: ["28년후", "승부", "얼굴", "귀멸의칼날"], 
+                correctAnswer: 1 // 정답: 2번
+            },
+            { 
+                id: 7, 
+                section: 3, 
+                question: "다음 사진은 5월 6일에 찍은 것이다. 이날 상호가 입고 있었던 아우터의 실제 색상은 무엇인가?", 
+                hasImage: true, 
+                imageUrl: "images/love_04.JPG", 
+                points: 5, 
+                options: ["차콜 그레이", "네이비", "딥 포레스트 그린", "제트 블랙"], 
+                correctAnswer: 2 // 정답: 3번
+            },
+            { 
+                id: 8, 
+                section: 3, 
+                question: "수완이가 상호에게 처음으로 선물했던 아이템은 무엇인가?", 
+                hasImage: false, 
+                points: 4, 
+                options: ["니트", "편지", "알부민", "소고기"], 
+                correctAnswer: 3 // 정답: 4번
+            }
         ];
 
         let userAnswers = {};

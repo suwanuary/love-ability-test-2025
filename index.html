@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025학년도 제1회 연애수학능력시험</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --paper-bg: #f4f1ea; --paper-dark: #e8e4d9; --ink-black: #1a1a1a;
+            --ink-gray: #4a4a4a; --ink-light: #6a6a6a; --border-color: #2a2a2a;
+            --omr-fill: #1a1a1a; --correct-color: #2d5a27; --wrong-color: #8b2020;
+        }
+        body {
+            font-family: 'Nanum Myeongjo', serif;
+            background-color: var(--paper-bg);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+            color: var(--ink-black); line-height: 1.8; min-height: 100vh;
+        }
+        .exam-container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        .exam-header {
+            border: 3px solid var(--border-color); padding: 30px; margin-bottom: 30px;
+            position: relative; background: var(--paper-bg);
+        }
+        .exam-header::before {
+            content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
+            border: 1px solid var(--border-color); pointer-events: none;
+        }
+        .exam-year { font-size: 14px; letter-spacing: 8px; text-align: center; margin-bottom: 15px; color: var(--ink-gray); }
+        .exam-title { font-size: 28px; font-weight: 800; text-align: center; letter-spacing: 6px; margin-bottom: 20px; }
+        .exam-subject {
+            font-size: 20px; text-align: center; padding: 10px 0;
+            border-top: 2px solid var(--border-color); border-bottom: 2px solid var(--border-color);
+            letter-spacing: 4px; margin-bottom: 25px;
+        }
+        .exam-info { display: flex; justify-content: space-between; align-items: center; font-size: 14px; padding-top: 15px; border-top: 1px dashed var(--ink-gray); }
+        .exam-info-item { display: flex; align-items: center; gap: 10px; }
+        .name-box { border: 1px solid var(--border-color); padding: 5px 20px; min-width: 100px; text-align: center; font-weight: 700; }
+        .exam-notice { border: 1px solid var(--border-color); padding: 20px; margin-bottom: 30px; font-size: 13px; background: var(--paper-dark); }
+        .exam-notice-title { font-weight: 700; margin-bottom: 10px; font-size: 14px; }
+        .exam-notice ul { padding-left: 20px; }
+        .exam-notice li { margin-bottom: 5px; }
+        .section-header {
+            background: var(--ink-black); color: var(--paper-bg); padding: 12px 20px;
+            font-size: 16px; font-weight: 700; letter-spacing: 3px; margin: 40px 0 25px 0;
+        }
+        .questions-container { display: flex; flex-direction: column; gap: 25px; }
+        @media (min-width: 769px) {
+            .questions-container { column-count: 2; column-gap: 30px; }
+            .question-card { break-inside: avoid; margin-bottom: 25px; }
+            .section-header { column-span: all; }
+        }
+        @media (max-width: 768px) {
+            .exam-title { font-size: 20px; letter-spacing: 3px; }
+            .exam-subject { font-size: 16px; }
+            .exam-info { flex-direction: column; gap: 10px; }
+        }
+        .question-card { border: 1px solid var(--border-color); padding: 20px; background: var(--paper-bg); break-inside: avoid; }
+        .question-number { font-weight: 700; margin-bottom: 12px; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .question-points { font-size: 13px; color: var(--ink-gray); font-weight: 400; }
+        .question-difficulty { font-size: 12px; color: var(--ink-gray); font-style: italic; }
+        .question-text { font-size: 14px; margin-bottom: 15px; text-align: justify; }
+        .question-image {
+            width: 100%; height: 180px; object-fit: cover;
+            filter: grayscale(100%) contrast(1.1); border: 1px solid var(--border-color); margin-bottom: 15px;
+        }
+        .options-list { list-style: none; }
+        .option-item { display: flex; align-items: flex-start; gap: 12px; padding: 8px 10px; margin-bottom: 5px; cursor: pointer; transition: background 0.2s; border-radius: 2px; }
+        .option-item:hover { background: var(--paper-dark); }
+        .omr-circle {
+            width: 22px; height: 22px; border: 2px solid var(--ink-black); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 12px;
+            font-weight: 700; flex-shrink: 0; transition: all 0.2s; position: relative;
+        }
+        .option-item.selected .omr-circle { background: var(--omr-fill); color: var(--paper-bg); }
+        .option-item.selected .omr-circle::after {
+            content: ''; position: absolute; width: 100%; height: 100%;
+            background: var(--omr-fill); border-radius: 50%; animation: markFill 0.3s ease-out;
+        }
+        @keyframes markFill { from { transform: scale(0); } to { transform: scale(1); } }
+        .option-text { font-size: 14px; line-height: 1.6; padding-top: 2px; }
+        .submit-section { margin-top: 50px; padding: 30px; border: 2px solid var(--border-color); text-align: center; background: var(--paper-bg); }
+        .submit-notice { font-size: 13px; color: var(--ink-gray); margin-bottom: 20px; }
+        .submit-btn {
+            font-family: 'Nanum Myeongjo', serif; font-size: 16px; font-weight: 700;
+            padding: 15px 60px; background: var(--ink-black); color: var(--paper-bg);
+            border: none; cursor: pointer; letter-spacing: 3px; transition: all 0.3s;
+        }
+        .submit-btn:hover { background: var(--ink-gray); transform: translateY(-2px); }
+        .submit-btn:active { transform: translateY(0); }
+        .submit-btn:disabled { background: var(--ink-light); cursor: not-allowed; transform: none; }
+        .admin-btn {
+            position: fixed; bottom: 20px; right: 20px; font-family: 'Nanum Myeongjo', serif;
+            font-size: 12px; padding: 10px 15px; background: var(--paper-dark);
+            border: 1px solid var(--border-color); cursor: pointer; opacity: 0.6; transition: opacity 0.3s;
+        }
+        .admin-btn:hover { opacity: 1; }
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); z-index: 1000; justify-content: center; align-items: center; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--paper-bg); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+        .modal-close { position: absolute; top: 15px; right: 15px; font-size: 24px; background: none; border: none; cursor: pointer; font-family: 'Nanum Myeongjo', serif; }
+        .result-modal .modal-content { border: 3px solid var(--border-color); padding: 40px; }
+        .result-header { text-align: center; border-bottom: 2px solid var(--border-color); padding-bottom: 20px; margin-bottom: 25px; }
+        .result-title { font-size: 22px; font-weight: 800; letter-spacing: 4px; margin-bottom: 10px; }
+        .result-subtitle { font-size: 14px; color: var(--ink-gray); }
+        .result-score { text-align: center; padding: 30px 0; border-bottom: 1px dashed var(--ink-gray); margin-bottom: 25px; }
+        .score-label { font-size: 14px; margin-bottom: 10px; }
+        .score-value { font-size: 48px; font-weight: 800; }
+        .score-total { font-size: 18px; color: var(--ink-gray); }
+        .result-grade { text-align: center; padding: 20px; background: var(--paper-dark); margin-bottom: 25px; }
+        .grade-label { font-size: 14px; margin-bottom: 8px; }
+        .grade-value { font-size: 28px; font-weight: 800; }
+        .result-message { text-align: center; font-size: 15px; line-height: 1.8; padding: 20px; border: 1px solid var(--border-color); }
+        .result-details { margin-top: 25px; font-size: 13px; }
+        .result-details-title { font-weight: 700; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
+        .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--paper-dark); }
+        .result-item.correct { color: var(--correct-color); }
+        .result-item.wrong { color: var(--wrong-color); }
+        .admin-modal .modal-content { border: 2px solid var(--border-color); padding: 30px; }
+        .admin-title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; letter-spacing: 2px; }
+        .admin-input-group { margin-bottom: 20px; }
+        .admin-input-group label { display: block; font-size: 13px; margin-bottom: 8px; }
+        .admin-input { width: 100%; padding: 12px; font-family: 'Nanum Myeongjo', serif; font-size: 14px; border: 1px solid var(--border-color); background: var(--paper-bg); }
+        .admin-submit { width: 100%; font-family: 'Nanum Myeongjo', serif; font-size: 14px; font-weight: 700; padding: 12px; background: var(--ink-black); color: var(--paper-bg); border: none; cursor: pointer; letter-spacing: 2px; }
+        .admin-error { color: var(--wrong-color); font-size: 13px; text-align: center; margin-top: 10px; display: none; }
+        .submissions-list { max-height: 400px; overflow-y: auto; }
+        .submission-item { border: 1px solid var(--border-color); padding: 15px; margin-bottom: 10px; background: var(--paper-dark); }
+        .submission-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 13px; }
+        .submission-score { font-weight: 700; }
+        .submission-answers { font-size: 12px; color: var(--ink-gray); }
+        .no-submissions { text-align: center; padding: 40px; color: var(--ink-gray); font-size: 14px; }
+        .loading-text { text-align: center; padding: 40px; color: var(--ink-gray); font-size: 14px; }
+        .exam-footer { text-align: center; margin-top: 50px; padding: 20px; font-size: 12px; color: var(--ink-light); border-top: 1px solid var(--paper-dark); }
+    </style>
+</head>
+<body>
+    <div class="exam-container">
+        <header class="exam-header">
+            <div class="exam-year">2025학년도</div>
+            <h1 class="exam-title">연애수학능력시험</h1>
+            <div class="exam-subject">수완-상호 영역</div>
+            <div class="exam-info">
+                <div class="exam-info-item"><span>문항수: 8문항</span></div>
+                <div class="exam-info-item"><span>배점: 31점 만점</span></div>
+                <div class="exam-info-item">
+                    <span>수험생 성명:</span>
+                    <div class="name-box">상 호</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="exam-notice">
+            <div class="exam-notice-title">◈ 수험생 주의사항 ◈</div>
+            <ul>
+                <li>모든 문항에는 배점이 표시되어 있습니다.</li>
+                <li>각 문항당 하나의 답만 선택할 수 있습니다.</li>
+                <li>시험 종료 후 성적표가 발급됩니다.</li>
+                <li>본 시험의 정답에 대한 이의제기는 수완이에게 문의바랍니다.</li>
+            </ul>
+        </div>
+
+        <main id="questionsArea">
+            <div class="section-header">제 1과목. 기억력 및 장소 추론 영역</div>
+            <div class="questions-container" id="section1"></div>
+            <div class="section-header">제 2과목. 취향 및 습관 파악 영역</div>
+            <div class="questions-container" id="section2"></div>
+            <div class="section-header">제 3과목. 디테일 및 심화 탐구 영역</div>
+            <div class="questions-container" id="section3"></div>
+        </main>
+
+        <div class="submit-section">
+            <p class="submit-notice">※ 제출 후에는 답안 수정이 불가합니다. 신중히 검토 후 제출하세요.</p>
+            <button class="submit-btn" id="submitBtn" onclick="submitExam()">제 출 하 기</button>
+        </div>
+
+        <footer class="exam-footer">
+            <p>본 시험지는 수완♥상호 커플 전용 시험입니다.</p>
+            <p>무단 복제 및 배포를 금합니다. ⓒ 2025 수완상호연애연구소</p>
+        </footer>
+    </div>
+
+    <button class="admin-btn" onclick="openAdminModal()">관리자</button>
+
+    <div class="modal-overlay result-modal" id="resultModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('resultModal')">&times;</button>
+            <div class="result-header">
+                <div class="result-title">성 적 표</div>
+                <div class="result-subtitle">2025학년도 제1회 연애수학능력시험</div>
+            </div>
+            <div class="result-score">
+                <div class="score-label">취득 점수</div>
+                <div><span class="score-value" id="finalScore">0</span><span class="score-total">/ 31</span></div>
+            </div>
+            <div class="result-grade">
+                <div class="grade-label">등급</div>
+                <div class="grade-value" id="finalGrade">-</div>
+            </div>
+            <div class="result-message" id="resultMessage"></div>
+            <div class="result-details">
+                <div class="result-details-title">문항별 채점 결과</div>
+                <div id="resultDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay admin-modal" id="adminModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('adminModal')">&times;</button>
+            <div class="admin-title">관리자 인증</div>
+            <div class="admin-input-group">
+                <label for="adminPassword">비밀번호를 입력하세요</label>
+                <input type="password" id="adminPassword" class="admin-input" placeholder="비밀번호">
+            </div>
+            <button class="admin-submit" onclick="verifyAdmin()">확 인</button>
+            <div class="admin-error" id="adminError">비밀번호가 올바르지 않습니다.</div>
+        </div>
+    </div>
+
+    <div class="modal-overlay admin-modal" id="submissionsModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('submissionsModal')">&times;</button>
+            <div class="admin-title">제출 내역</div>
+            <div class="submissions-list" id="submissionsList"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJyTuP_D1YFeVoyP0GWccDJrlJteF-jbE",
+            authDomain: "love-ability-test-2025.firebaseapp.com",
+            projectId: "love-ability-test-2025",
+            storageBucket: "love-ability-test-2025.firebasestorage.app",
+            messagingSenderId: "498893628036",
+            appId: "1:498893628036:web:d01321353229857a4898d1",
+            measurementId: "G-ZZT9VH89TH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.firebaseDB = db;
+        window.firebaseAddDoc = addDoc;
+        window.firebaseCollection = collection;
+        window.firebaseGetDocs = getDocs;
+        window.firebaseOrderBy = orderBy;
+        window.firebaseQuery = query;
+        console.log("Firebase 초기화 완료!");
+    </script>
+
+    <script>
+        const quizData = [
+            { id: 1, section: 1, question: "다음 제시된 사진은 두 사람이 봄에 방문했던 장소이다. 사진 속 장소에서 발생했던 사건으로 옳은 것은?", hasImage: true, imageUrl: "images/love_01.JPG", points: 3, options: ["주차할 곳을 바로 찾아서 빠르게 주차했다.", "상호가 메뉴 주문을 잘못해서 수완이한테 혼났다.", "너무 맛있어서 둘 다 말없이 밥만 먹었다.", "식당 주차비로 65,000원이 나왔다."], correctAnswer: 3 },
+            { id: 2, section: 1, question: "다음은 두 사람이 100일을 기념하여 방문했던 식당의 음식 사진이다. 이 날 식사를 마친 후 두 사람이 이동한 장소로 알맞은 것은?", hasImage: true, imageUrl: "images/love_02.JPG", points: 4, options: ["케이크 전문점에 가서 케이크를 만들었다.", "부평CGV에서 F1을 관람했다.", "음료를 마시며 부평 종합 시장을 구경했다.", "수완이 집으로 가서 2차를 시작했다."], correctAnswer: 0 },
+            { id: 3, section: 1, question: "다음 사진의 배경이 되는 장소는 어디인가?", hasImage: true, imageUrl: "images/love_03.JPG", points: 5, difficulty: "난이도 상", options: ["홍대입구역 맛집", "건대입구역 맛집", "여의도 맛집", "석촌호수 맛집"], correctAnswer: 2 },
+            { id: 4, section: 2, question: "다음 중 수완이가 가장 좋아하는 브랜드와 메뉴가 올바르게 짝지어진 것은?", hasImage: false, points: 3, options: ["[엽기떡볶이] - [매운맛]", "[롯데리아] - [새우버거]", "[메가커피] - [말차라떼]", "[본죽] - [쇠고기야채죽]"], correctAnswer: 2 },
+            { id: 5, section: 2, question: "상호가 평소에 수완이에게 가장 자주 하는 잔소리(혹은 말버릇)로 옳은 것은?", hasImage: false, points: 4, options: ['"밥은 먹고 하는 거지?"', '"보고싶어"', '"따뜻하게 입엉"', '"너무 예쁜 거 아니야?"'], correctAnswer: 0 },
+            { id: 6, section: 2, question: "두 사람이 처음으로 같이 봤던 영화의 제목으로 옳은 것은?", hasImage: false, points: 3, options: ["28년후", "승부", "얼굴", "귀멸의칼날"], correctAnswer: 3 },
+            { id: 7, section: 3, question: "다음 사진은 5월 6일에 찍은 것이다. 이날 상호가 입고 있었던 아우터의 실제 색상은 무엇인가?", hasImage: true, imageUrl: "images/love_04.JPG", points: 5, options: ["차콜 그레이", "네이비", "딥 포레스트 그린", "제트 블랙"], correctAnswer: 1 },
+            { id: 8, section: 3, question: "수완이가 상호에게 처음으로 선물했던 아이템은 무엇인가?", hasImage: false, points: 4, options: ["니트", "편지", "알부민", "소고기"], correctAnswer: 0 }
+        ];
+
+        let userAnswers = {};
+        const ADMIN_PASSWORD = "zzzacs1";
+        const gradeThresholds = [
+            { min: 28, grade: "1등급", message: "완벽해요! 당신은 진정한 연인입니다 💕" },
+            { min: 24, grade: "2등급", message: "훌륭해요! 거의 다 맞았어요 ✨" },
+            { min: 19, grade: "3등급", message: "좋아요! 조금만 더 관심을 가져볼까요? 💝" },
+            { min: 14, grade: "4등급", message: "괜찮아요! 앞으로 더 많은 추억을 쌓아가요 🌸" },
+            { min: 8, grade: "5등급", message: "음... 데이트를 더 자주 해야겠어요 😅" },
+            { min: 0, grade: "6등급", message: "수완이에게 혼나기 전에 복습하세요! 📚" }
+        ];
+
+        function renderQuestions() {
+            for (let section = 1; section <= 3; section++) {
+                const sectionQuestions = quizData.filter(q => q.section === section);
+                const container = document.getElementById(`section${section}`);
+                sectionQuestions.forEach(q => { container.innerHTML += createQuestionHTML(q); });
+            }
+        }
+
+        function createQuestionHTML(q) {
+            const circleNumbers = ['①', '②', '③', '④'];
+            let optionsHTML = q.options.map((opt, idx) => `
+                <li class="option-item" onclick="selectOption(${q.id}, ${idx})">
+                    <div class="omr-circle">${circleNumbers[idx]}</div>
+                    <span class="option-text">${opt}</span>
+                </li>
+            `).join('');
+            return `
+                <div class="question-card" id="question-${q.id}">
+                    <div class="question-number">
+                        <span>문제 ${q.id}.</span>
+                        <span>${q.difficulty ? `<span class="question-difficulty">(${q.difficulty})</span>` : ''}<span class="question-points">(${q.points}점)</span></span>
+                    </div>
+                    ${q.hasImage ? `<img src="${q.imageUrl}" alt="문제 ${q.id} 이미지" class="question-image" onerror="this.src='https://placehold.co/400x300?text=이미지+준비중'">` : ''}
+                    <p class="question-text">${q.question}</p>
+                    <ul class="options-list" id="options-${q.id}">${optionsHTML}</ul>
+                </div>
+            `;
+        }
+
+        function selectOption(questionId, optionIndex) {
+            userAnswers[questionId] = optionIndex;
+            const optionsList = document.getElementById(`options-${questionId}`);
+            const options = optionsList.querySelectorAll('.option-item');
+            options.forEach((opt, idx) => {
+                if (idx === optionIndex) opt.classList.add('selected');
+                else opt.classList.remove('selected');
+            });
+        }
+
+        async function submitExam() {
+            const answeredCount = Object.keys(userAnswers).length;
+            if (answeredCount < quizData.length) {
+                const unanswered = quizData.length - answeredCount;
+                if (!confirm(`아직 ${unanswered}문제를 풀지 않았습니다. 그래도 제출하시겠습니까?`)) return;
+            }
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '제출 중...';
+
+            let totalScore = 0;
+            let detailsHTML = '';
+            const circleNumbers = ['①', '②', '③', '④'];
+            quizData.forEach(q => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                if (isCorrect) totalScore += q.points;
+                const userAnswerText = userAnswer !== undefined ? circleNumbers[userAnswer] : '미응답';
+                const statusClass = isCorrect ? 'correct' : 'wrong';
+                const statusText = isCorrect ? '○' : '✕';
+                detailsHTML += `<div class="result-item ${statusClass}"><span>문제 ${q.id} (${q.points}점)</span><span>${userAnswerText} ${statusText}</span></div>`;
+            });
+
+            let grade = gradeThresholds.find(g => totalScore >= g.min);
+            document.getElementById('finalScore').textContent = totalScore;
+            document.getElementById('finalGrade').textContent = grade.grade;
+            document.getElementById('resultMessage').textContent = grade.message;
+            document.getElementById('resultDetails').innerHTML = detailsHTML;
+
+            await saveToFirebase(totalScore, userAnswers, grade.grade);
+            submitBtn.disabled = false;
+            submitBtn.textContent = '제 출 하 기';
+            document.getElementById('resultModal').classList.add('active');
+        }
+
+        async function saveToFirebase(score, answers, grade) {
+            const submission = { score, grade, answers, timestamp: new Date().toISOString(), totalQuestions: quizData.length, maxScore: 31 };
+            try {
+                if (window.firebaseDB && window.firebaseAddDoc && window.firebaseCollection) {
+                    const docRef = await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDB, "submissions"), submission);
+                    console.log("Firebase 저장 성공! Document ID:", docRef.id);
+                } else {
+                    console.log("Firebase 로딩 중... 로컬 저장으로 대체");
+                    saveToLocalStorage(submission);
+                }
+            } catch (error) {
+                console.error("Firebase 저장 실패:", error);
+                saveToLocalStorage(submission);
+            }
+        }
+
+        function saveToLocalStorage(submission) {
+            let submissions = JSON.parse(localStorage.getItem('examSubmissions') || '[]');
+            submissions.push(submission);
+            localStorage.setItem('examSubmissions', JSON.stringify(submissions));
+        }
+
+        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+        function openAdminModal() {
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminError').style.display = 'none';
+            document.getElementById('adminModal').classList.add('active');
+        }
+
+        function verifyAdmin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) { closeModal('adminModal'); showSubmissions(); }
+            else { document.getElementById('adminError').style.display = 'block'; }
+        }
+
+        async function showSubmissions() {
+            const listContainer = document.getElementById('submissionsList');
+            const circleNumbers = ['①', '②', '③', '④'];
+            listContainer.innerHTML = '<div class="loading-text">데이터 로딩 중...</div>';
+            document.getElementById('submissionsModal').classList.add('active');
+
+            try {
+                let submissions = [];
+                if (window.firebaseDB && window.firebaseGetDocs && window.firebaseCollection) {
+                    const q = window.firebaseQuery(window.firebaseCollection(window.firebaseDB, "submissions"), window.firebaseOrderBy("timestamp", "desc"));
+                    const querySnapshot = await window.firebaseGetDocs(q);
+                    querySnapshot.forEach((doc) => { submissions.push(doc.data()); });
+                }
+                const localSubmissions = JSON.parse(localStorage.getItem('examSubmissions') || '[]');
+                if (localSubmissions.length > 0) {
+                    submissions = [...submissions, ...localSubmissions];
+                    submissions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                }
+                if (submissions.length === 0) {
+                    listContainer.innerHTML = '<div class="no-submissions">아직 제출된 답안이 없습니다.</div>';
+                } else {
+                    let html = '';
+                    submissions.forEach((sub) => {
+                        const date = new Date(sub.timestamp);
+                        const dateStr = `${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+                        let answersStr = Object.entries(sub.answers).sort((a, b) => Number(a[0]) - Number(b[0])).map(([qId, ans]) => `${qId}번:${circleNumbers[ans]}`).join(', ');
+                        html += `<div class="submission-item"><div class="submission-header"><span>${dateStr}</span><span class="submission-score">${sub.score}점 / 31점 (${sub.grade || '-'})</span></div><div class="submission-answers">답안: ${answersStr}</div></div>`;
+                    });
+                    listContainer.innerHTML = html;
+                }
+            } catch (error) {
+                console.error("데이터 로드 실패:", error);
+                listContainer.innerHTML = '<div class="no-submissions">데이터를 불러오는데 실패했습니다.</div>';
+            }
+        }
+
+        document.getElementById('adminPassword').addEventListener('keypress', function(e) { if (e.key === 'Enter') verifyAdmin(); });
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+        });
+        document.addEventListener('DOMContentLoaded', renderQuestions);
+    </script>
+</body>
+</html>
